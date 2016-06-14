@@ -1,0 +1,384 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" Inherits="Master_HomeMasterPage" Codebehind="HomeMasterPage.master.cs" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1" >
+    <title>Transit.511.org</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="San Francisco Bay Area public transit trip planning." name="description"/>   
+    <meta content="public transit san francisco bay area sf regional transportation" name="keywords"/> 
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+   
+   <script type="text/javascript" language="javascript">  var mapServicePath = '<%=ConfigurationManager.AppSettings["MAPSERVICE_PATH"].ToString() %>'</script>
+    
+<% #if DEBUG %>
+    <link rel="stylesheet" type="text/css" media="all" href="../css/ui.shell.css" />
+    <link rel="stylesheet" type="text/css" href="../css/reset.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/screen.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/new.css"  />
+    <link rel="stylesheet" type="text/css" media="screen" href="../css/p6.css"  />
+    <link rel="stylesheet" type="text/css" href="../css/colortip-1.0-jquery.css"/>
+
+
+    <script language="JavaScript"  type="text/javascript" src="../scripts/jquerymain.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/splitter.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/ui.shell-1.5.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/script.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/colortip-1.0-jquery.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/ticker.js"></script>
+    <script language="JavaScript"  type="text/javascript" src="../scripts/verticaltabs.pack.js"></script>
+
+<% #else %>
+
+    <link rel="stylesheet" type="text/css" href="../MSBuild/MasterPage.styles.min.css" />
+    <script language="JavaScript"  type="text/javascript" src="../MSBuild/MasterPage.scripts.min.js"></script>
+
+<% #endif %>
+
+
+     <script type="text/javascript" >
+       //  var mapServicePath = '<%=ConfigurationManager.AppSettings["MAPSERVICE_PATH"].ToString() %>'
+         djConfig = {
+             parseOnLoad: true,
+             baseUrl: "./",
+             modulePaths: {
+                 "mapdijits": "../tripplanner/mapdijits"
+             },
+             xdWaitSeconds: 10
+         };
+
+    </script>
+    <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.5/js/dojo/dijit/themes/tundra/tundra.css"/>
+    <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.5"></script>
+    
+
+    <asp:ContentPlaceHolder runat="server" id="headerPlaceHolder" />
+
+    <!-- this style added last to help prevent from getting cascaded over. 
+    Must remain below headerPlaceHolder -->
+    <style type="text/css">
+    span.hidden_508 
+    { 
+        position: absolute;
+        left:-5000px;
+        top:0;
+        width:1;
+        height:1;
+        overflow:hidden;
+    }
+    </style>
+    
+</head>
+
+<body>
+<div id="ui">
+<div id="ui-head"><div class="ui-pane clearfix"><div class="ui-pane-content clearfix">
+
+
+<!-- start header content -->
+       
+ <div id="header">
+    <div id="my-login-tagline">
+        <a tabindex="10" title="MY511" href="http://my511.org/"><img width="36" height="36" alt="My 511" src="http://511.org/img/global/my511.gif"/></a>
+        <ul>
+            <li><a href="http://www.my511.org/">Login</a></li>
+            <li class="last"><a href="http://www.my511.org/regstep1.aspx">Register</a></li>
+        </ul>
+    </div><!-- END my-login-tagline -->
+         <div id="logo"> <a tabindex="1" href="http://511.org/default.asp"><img alt="511 logo" src="http://transit.511.org/img/logos/511-logo.gif"/></a> 
+            <table cellspacing='0' cellpadding='0'  id='tbl_ticker' border="0" style="visibility:hidden;">
+                <tr>
+                    <td>
+                        <%--<div id="tickerBox">
+                    <table style="cellpadding:0; cellspacing:0; margin-top:2px;">
+                          <tr>
+                                <td>
+                                      <div id="div_tickericon" class="emergencyIcon">
+                                            <img alt='emergency' src="http://images.transit.511.org/RUI/fw/emergencyIcon.gif" width="36" height="31" border="1" />                                      
+                                       </div>                                
+                                </td>
+                                <td id="td_tickerdata">
+                                    <div id ='div_tickseprator' style="height:3px;background-color:transparent;font-size:1px"> </div>
+                                    <div id='div_tickerInfomain' class="emergencyInfo" >
+                                            <p id='div_ticker'>
+                                               
+                                               <!-- Comment/Uncomment the below line for disabling/enabling ticker -->
+                                               <script type="text/javascript" language="javascript" src="../scripts/ticker.js"></script>
+                    					        <script language="javascript" type="text/javascript">
+
+                    					            if ($.browser.version != null) {
+                    					                if (($.browser.mozilla && $.browser.version.substr(0, 3) == "1.9") || ($.browser.msie && $.browser.version == "6.0")) {
+
+                    					                    $("#div_tickericon").removeClass("emergencyIcon").addClass("emergencyIconFix");
+                    					                }
+                    					            }
+                        					          
+                    					        </script>
+                                            </p>
+                                      </div>                                
+                                </td>
+                          </tr>
+                    </table>
+              </div>--%>
+                    <br />                    </td>
+                </tr>
+            </table>
+          </div><!-- END logo -->
+          
+          <ul id="external-top-nav">
+            <li class="active"><a tabindex="2" title="511.org" href="http://511.org/default.asp">511.org</a></li>
+            <li><a tabindex="3" title="Transit" href="http://tripplanner.transit.511.org/mtc/XSLT_TRIP_REQUEST2?language=en">Transit</a></li>
+            <li><a tabindex="4" title="Traffic" href="http://traffic.511.org/default.asp?refresh=5">Traffic</a></li>
+            <li><a tabindex="5" title="Rideshare" href="http://rideshare.511.org/">Rideshare</a></li>
+            <li><a tabindex="6" title="Bicycling" href="http://bicycling.511.org/">Bicycling</a></li>
+          </ul>
+          
+          <ul id="internal-top-nav">
+            <li class="hilite"><a tabindex="20" title="511 Home" href="http://511.org/">511 Home</a>            
+            </li>
+            <li class="hilite"><a tabindex="30" title="Get Around" href="http://511.org/get-around.asp">Get Around</a>
+              <ul>
+                <li><a tabindex="31" title="Commuting" href="http://511.org/get-around-commuting.asp">Commuting</a></li>
+                <li><a tabindex="31" title="Tolls" href="http://511.org/get-around-tolls.asp">Tolls</a></li>
+                <li><a tabindex="32" title="511 Freeway Aid" href="http://511.org/get-around-freeway-aid.asp">511 Freeway Aid</a></li>
+                <li><a tabindex="32" title="Transit Disruptions" href="http://511.org/get-around-transit-disruptions.asp">Transit Disruptions</a></li>
+                <li><a tabindex="32" title="Taking a Leisure Trip" href="http://511.org/get-around-leisure-trip.asp">Taking a Leisure Trip</a></li>                
+                <li><a tabindex="33" title="Airports" href="http://511.org/get-around-airports.asp">Airports</a></li>
+                <li><a tabindex="34" title="Leaving the Bay Area" href="http://511.org/get-around-leaving-the-bay.asp">Leaving the Bay Area</a></li>
+                <!--<li><a href="/get-around-finding-parking.asp">Finding a Parking Space</a></li>-->
+                <li><a tabindex="35" title="Local Traveler Information Services" href="http://511.org/get-around-local-traveler.asp">Local Traveler Information Services</a></li>
+                <li><a tabindex="36" title="Preparing for Emergencies" href="http://511.org/get-around-preparing-for-emergencies.asp">Preparing for Emergencies</a></li>
+              </ul>
+            </li>
+            <li class="hilite"><a tabindex="40" title="Go Green" href="http://511.org/go-green.asp">Go Green</a>
+              <ul>
+                <li><a tabindex="41" title="Take Transit" href="http://511.org/go-green-take-transit.asp">Take Transit</a></li>
+                <li><a tabindex="42" title="Join a Carpool" href="http://511.org/go-green-join-carpool.asp">Join a Carpool</a></li>
+                <li><a tabindex="43" title="Drive Smart" href="http://511.org/go-green-drive-smart.asp">Drive Smart</a></li>
+                <li><a tabindex="44" title="Bicycle" href="http://511.org/go-green-bicycle.asp">Bicycle</a></li>
+                <li><a tabindex="45" title="Walk" href="http://511.org/go-green-walk.asp">Walk</a></li>
+                <li><a tabindex="46" title="Carshare" href="http://511.org/go-green-carshare.asp">Carshare</a></li>
+                <li><a tabindex="47" title="TeleWork" href="http://511.org/go-green-telework.asp">TeleWork</a></li>
+              </ul>
+            </li>
+            <li class="hilite"><a tabindex="50" title="Call 511" href="http://511.org/call-511.asp">Call 511</a>
+              <ul>
+                 <li><a tabindex="51" title="Coverage" href="http://511.org/call-511-coverage.asp">Coverage</a></li>
+                <li><a tabindex="52" title="Speed Through 511" href="http://511.org/call-511-speed-through.asp">Speed Through 511</a></li>
+                <li><a tabindex="53" title="Get Real-Time Updates" href="http://511.org/call-511-real-time-updates.asp">Get Real-Time Updates</a></li>
+                <li><a tabindex="54" title="Recognition Problems" href="http://511.org/call-511-recognition-problems.asp">Recognition Problems?</a></li>
+                <li><a tabindex="55" title="Connect with a Live Operator" href="http://511.org/call-511-live-operator.asp">Connect with a Live Operator</a></li>
+                <li><a tabindex="56" title="Safety Tips" href="http://511.org/call-511-safety-tips.asp">Safety Tips</a></li>
+                <li><a tabindex="57" title="FAQs" href="http://511.org/call-511-faq.asp">FAQs</a></li>
+              </ul>
+            </li>
+            <li class="hilite"><a tabindex="60" title="About 511" href="http://511.org/about-511.asp">About 511</a>
+              <ul>
+                <li><a tabindex="61" title="Phone Features" href="http://511.org/about-511-phone-features.asp">Phone Features</a></li>
+                <li><a tabindex="61" title="Web Features" href="http://511.org/about-511-web-features.asp">Web Features</a></li>
+                <li><a tabindex="61" title="511 Mobile" href="http://511.org/about-511-mobile.asp">511 Mobile</a></li>
+                <li><a tabindex="61" title="Who We Are" href="http://511.org/about-511-who-we-are.asp">Who We Are</a></li>
+                <li><a tabindex="61" title="Suggestions" href="http://511.org/about-511-suggestions.asp">Suggestions</a></li>
+                <li><a tabindex="61" title="Brand Toolbox" href="http://511.org/511brandtoolbox/main.asp">Brand Toolbox</a></li>
+              </ul>
+            </li>            
+            <li class="hilite"><a tabindex="65" title="Mobile and Apps" href="http://511.org/apps.asp">Mobile &amp; Apps</a>            
+             <ul>
+                <li><a tabindex="65" title="511 Transit App" href="http://511.org/apps-transit.asp">511 Transit App</a></li>
+          	    <li><a tabindex="65" title="511 Mobile" href="http://511.org/apps-511-mobile.asp">511 Mobile</a></li>
+                <li><a tabindex="65" title="511 Departure Times Texting" href="http://511.org/apps-dept-times-texting.asp">511 Departure Times Texting</a></li>
+                <li><a tabindex="65" title="Third Party Apps" href="http://511.org/apps-3rd-party-apps.asp">Third Party Apps</a></li>
+                <li><a tabindex="65" title="Third Party Websites" href="http://511.org/apps-websites.asp">Third Party Websites</a></li>
+             </ul>
+           </li>        
+            <li class="hilite"><a tabindex="70" title="Developer Resources" href="http://511.org/developer-resources.asp">Developer Resources</a>
+              <ul>
+          	    <li><a tabindex="70" title="511 Traffic Data Feed" href="http://511.org/developer-resources_traffic-data-feed.asp">511 Traffic Data Feed</a></li>
+                <li><a tabindex="70" title="511 Transit Data Feed" href="http://511.org/developer-resources_transit-data-feed.asp">511 Transit Data Feed</a></li>
+                <li><a tabindex="70" title="Custom 511 RideMatch Services" href="http://511.org/developer-resources_ridematch-service.asp">Custom 511 RideMatch Services</a></li>
+                <li><a tabindex="70" title="511 Driving Times API" href="http://511.org/developer-resources_driving-times-api.asp">511 Driving Times API</a></li>
+                <li><a tabindex="70" title="511 Real-time Transit Departures API" href="http://511.org/developer-resources_transit-api.asp">511 Real-time Transit Departures API</a></li>
+              </ul>
+            </li>
+
+            <li class="activeheader"><a tabindex="71" title="Enhanced Planner (BETA)" href="#">Enhanced Planner <label class="Beta">BETA</label></a>
+              <ul>
+          	    <li><a tabindex="74" title="Overview" href="http://511.org/enhanced-trip-planner.asp">Overview</a></li>
+                <li><a tabindex="76" title="FAQ" href="http://511.org/enhanced-trip-planner-faq.asp">FAQ</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>   
+     <div class="clear"></div>       
+<!-- end header content -->
+                   <%-- <div id="breaking-news">
+						<span class="breaking-news-red" style="display:none;">Breaking News: </span>
+						<span class="breaking-news-link" style="display:none;"></span>
+						&nbsp;&nbsp;<a id="breaking-news-toggle" href="#" style=" display:none;">Stop ticker</a>
+					</div>--%>
+                    <div id="breaking-news" style="display:table;">
+                    <div style="display:table-row;">
+						<div style="display:table-cell; width:130px"><span class="breaking-news-red" style="display:none;">Breaking News:</span></div>
+						<div style="display:table-cell;"><span class="breaking-news-link"></span></div>
+						<div style="display:table-cell; width:100px;">&nbsp;&nbsp;<a id="breaking-news-toggle" href="#" style="font-size:75%; display:none;">Stop ticker</a></div>
+                        </div>
+					</div>
+
+
+</div></div></div><!-- /id="ui-head" -->
+
+
+<div id="ui-main">
+
+<div id="ui-body">
+
+
+        <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+        
+        </asp:ContentPlaceHolder>
+
+
+</div>
+
+
+
+
+<div id="ui-foot"><div class="ui-pane clearfix" ><a tabindex="9000" class="ui-toggle-link" id="ui-toggle-bottompane" title="expand footer" href="javascript:;">Toggle</a><div class="ui-pane-content clearfix">
+
+<!-- start footer -->
+
+    <div id="footer">
+        
+      <!-- HOT STUDIO ADDITION!!!! Add footerWrapper around contents of #footer -->    
+      <div>
+      
+        <div class="footer-menu width-220 border-none">
+          <p>In This Section</p>
+          <div class="center-menu">
+            <div class="left">
+              <ul>
+                <li class=""><a tabindex="9001" href="http://511.org/default.asp">511 Home</a></li>
+                <li class=""><a tabindex="9002" href="http://511.org/get-around.asp">Get Around</a></li>
+                <li class=""><a tabindex="9003" href="http://511.org/go-green.asp">Go Green</a></li>
+              </ul>
+            </div><!-- END left -->
+            <div class="right">
+              <ul>
+                <li class=""><a tabindex="9010" href="http://511.org/call-511.asp">Call 511</a></li>
+                <li class=""><a tabindex="9011" href="http://511.org/about-511.asp">About 511</a></li>
+                <li class=""><a tabindex="9012" href="http://511.org/about-511-suggestions.asp">Suggestions</a></li>
+              </ul>
+            </div><!-- END right -->
+            <div>
+                <ul>
+                    <li class=""><a tabindex="9013" href="http://enhancedtripplanner.transit.511.org/TransitMMTP/tripplanner/index.aspx">Enhanced Trip Planner</a></li>
+                </ul>
+            </div>
+          </div><!-- END center-menu -->
+        </div><!-- END footer-menu -->
+        
+        <div class="footer-menu width-205">
+          <p>511.org</p>
+          <div class="center-menu">
+            <div class="left">
+              <ul>
+                <li class=""><a tabindex="9020" href="http://511.org/default.asp">511 SF Bay</a></li>
+                <li class=""><a tabindex="9021" href="http://tripplanner.transit.511.org/mtc/XSLT_TRIP_REQUEST2?language=en">Transit</a></li>
+                <li class=""><a tabindex="9022" href="http://traffic.511.org/default.asp?refresh=5">Traffic</a></li>
+              </ul>
+            </div><!-- END left -->
+            <div class="right">
+              <ul>
+                <li class=""><a tabindex="9030" href="http://www.my511.org/">MY 511</a></li>
+                <li class=""><a tabindex="9031" href="http://rideshare.511.org/">Rideshare</a></li>
+                <li class=""><a tabindex="9022" href="http://bicycling.511.org/">Bicyling</a></li>
+              </ul>
+            </div><!-- END right -->
+            <div>
+                <ul>
+                    <li><a tabindex="9030" href="http://www.511.org/apps.asp">Mobile & Apps</a></li>
+                </ul>
+            </div>
+          </div><!-- END center-menu -->
+        </div><!-- END footer-menu -->
+        
+        <div class="footer-menu width-243">
+          <p>511 Tools</p>
+          <div class="center-menu">
+            <div class="left">
+              <ul>
+                <li class=""><a tabindex="9040" href="http://trafficbeta.511.org/index">Traffic & Driving Times</a></li>
+                <li class=""><a tabindex="9041" href="http://trafficbeta.511.org/parking">Parking</a></li>               
+                <li class=""><a tabindex="9043" href="https://www.ridematch.511.org/SanFrancisco/TDMLogin.jsp?idScreen=LOGIN1&client">RideMatch Service</a></li>
+                <li class=""><a tabindex="9042" href="http://mtcgis.mtc.ca.gov/btp/Default.aspx">BikeMapper</a></li>
+              </ul>
+            </div><!-- END left -->
+            <div class="right">
+              <ul>
+                <li class=""><a tabindex="9049" href="http://enhancedtripplanner.transit.511.org/TransitMMTP/tripplanner/index.aspx">Enhanced Trip Planner</a></li>
+                <li class=""><a tabindex="9050" href="http://tripplanner.transit.511.org/mtc/XSLT_TRIP_REQUEST2?language=en">Transit Trip Planner</a></li>
+                <li class=""><a tabindex="9051" href="http://transit.511.org/schedules/index.aspx#m1=S&m2=bus">Routes &amp; Schedules</a></li>
+                <li class=""><a tabindex="9052" href="http://transit.511.org/511departuretimes.aspx">Departure Times</a></li>
+              </ul>
+            </div><!-- END right -->
+          </div><!-- END center-menu -->
+        </div><!-- END footer-menu -->
+        
+        <div class="footer-menu width-96">
+          <p>Languages</p>
+          <ul>
+            <li><a tabindex="9060" href="http://511.org/language_disclaimer.asp">Disclaimer</a></li>
+            <li><a tabindex='9061' title="En Español" href="http://translate.google.com/translate?u=http%3a%2f%2ftransit.511.org%2faccessible%2findex.aspx&langpair=en%7Ces&hl=en&ie=UTF-8&oe=UTF-8&prev=%2Flanguage_tools">En Español</a></li>
+            <li><a tabindex="9062" title="Chinese" href="http://translate.google.com/translate?u=http%3a%2f%2ftransit.511.org%2faccessible%2findex.aspx&langpair=en%7Czh-CN&hl=en&ie=UTF-8&oe=UTF-8&prev=%2Flanguage_tools">中文</a></li>
+          </ul>
+        </div><!-- END footer-menu -->
+        
+        <div class="footer-menu width-last">
+          <p>About This Site</p>
+          <div class="center-menu">
+            <div class="left">
+              <ul>
+                <li class=""><a tabindex="9070" href="http://511.org/511brandtoolbox/main.asp">Brand Toolbox</a></li>
+                <li class=""><a tabindex="9071"  href="http://www.511.org/about-511.asp">About 511</a></li>
+                <li class=""><a tabindex="9072" href="http://511.org/terms.asp">Terms of Use</a></li>
+                <li class=""><a tabindex="9073" href="http://511.org/privacy.asp">Privacy Policy</a></li>
+              </ul>
+            </div><!-- END left -->
+            <div class="right">
+              <ul>
+                <li class=""><a tabindex="9074" href="http://511.org/accessibility.asp">Accessibility</a></li>
+                <li class=""><a tabindex="9075" href="http://www.511.org/call-511-faq.asp">511 Phone Help</a></li>
+                <li class=""><a tabindex="9076" href="http://511.org/developer-resources.asp">Dev Resources</a></li>
+              </ul>
+            </div><!-- END right -->
+          </div><!-- END center-menu -->
+        </div><!-- END footer-menu -->
+        
+         <div class="footer-menu">
+            <div class="right" style="padding:10px;">
+             <ul>
+                <li class=""><a tabindex="9080" target="_blank" href="http://www.facebook.com//pages/511-SF-Bay-Area/126301929264"><img border="0" alt="Facebook" src="http://www.511.org/img/global/facebook16x16.gif"/></a>  <a target="_blank" href="http://twitter.com/511SFBay"><img border="0" alt="Twitter" src="http://www.511.org/img/global/twitter16x16.gif"/></a></li>
+                <li class=""><a tabindex="9081" href="http://www.mtc.ca.gov/">©2012 Metropolitan Transportation Commission</a></li>
+             </ul>
+            </div><!-- END left -->
+        </div><!-- END footer-menu -->
+        
+        
+        
+        
+ <!-- end footer content -->
+</div>
+    </div></div><!-- /id="ui-foot" -->
+</div><!-- /id="ui-main" -->
+</div><!-- /id="ui" -->
+</div>
+
+
+</div>
+<%Response.Write("<!--" + System.Environment.MachineName.ToString() + "-->"); %>
+</body>
+
+ 
+
+</html>
